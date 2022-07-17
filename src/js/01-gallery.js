@@ -18,11 +18,12 @@ const renderGallery = galleryItems
   )
   .join("");
 
-function insertRenderedItems(string) {
-  return galleryContainer.insertAdjacentHTML("beforeend", string);
-}
+ galleryContainer.insertAdjacentHTML("beforeend", renderGallery);
 
-insertRenderedItems(renderGallery);
+// function insertRenderedItems(string) {
+//   return galleryContainer.insertAdjacentHTML("beforeend", string);
+// }
+// insertRenderedItems(renderGallery);
 
 let gallery = new SimpleLightbox(".gallery a", {
   captionsData: "alt",
