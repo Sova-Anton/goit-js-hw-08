@@ -3,36 +3,45 @@ import throttle from 'lodash.throttle';
 const STORAGE_KEY = 'feedback-form-state';
 
 const form = document.querySelector('.feedback-form');
-const input = document.querySelector('input');
-const textarea = document.querySelector('textarea');
 
+form.addEventListener('submit', onFormSubmit);
 form.addEventListener('input', throttle(onFormInput, 500));
-form.addEventListener('submit', throttle(onFormSubmit, 500));
 
-const formData = {};
+let savedInputs;
+// const formData = {};
 
 getStorageInputs();
-
-function onFormInput(e) {
-  e.preventDefault();
-  formData[e.target.name] = e.target.value;
-
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
-}
 
 function onFormSubmit(e) {
   e.preventDefault();
   e.currentTarget.reset();
   localStorage.removeItem(STORAGE_KEY);
-  console.log(formData);
+  console.log(
+    savedInputs
+  ); /* Подскажите как вывести в консоль обьект инпутов при сабмите не вынося  let savedInputs глобально из функции function onFormInput(e)*/
+}
+
+function onFormInput(e) {
+  // e.preventDefault();
+  // formData[e.target.name] = e.target.value;
+  // localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+
+  /* Чтобы избавиться от const formData = {};  ИЗ ЗАПИСИ КУРСА JS39*/
+
+  savedInputs = localStorage.getItem(STORAGE_KEY);
+  savedInputs = savedInputs ? JSON.parse(savedInputs) : {};
+  savedInputs[e.target.name] = e.target.value;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(savedInputs));
 }
 
 function getStorageInputs() {
-  const savedData = localStorage.getItem(STORAGE_KEY);
-  const parseSaveData = JSON.parse(savedData);
+  let savedData = localStorage.getItem(STORAGE_KEY);
 
   if (savedData) {
-    input.value = parseSaveData.email;
-    textarea.value = parseSaveData.message;
+    savedData = JSON.parse(savedData);
+    Object.entries(savedData).forEach(([name, value]) => {
+      // formData[name] = value;
+      form.elements[name].value = value;
+    });
   }
 }
