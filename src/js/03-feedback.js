@@ -7,28 +7,23 @@ const form = document.querySelector('.feedback-form');
 form.addEventListener('submit', onFormSubmit);
 form.addEventListener('input', throttle(onFormInput, 500));
 
-let savedInputs;
-// const formData = {};
 
 getStorageInputs();
 
 function onFormSubmit(e) {
   e.preventDefault();
+  /*Для Вывода обьекта в консоль */
+  const formData = new FormData(form);
+  const userData = {};
+  formData.forEach((value, name) => userData[name] = value);
+  console.log(userData);
+
   e.currentTarget.reset();
   localStorage.removeItem(STORAGE_KEY);
-  console.log(
-    savedInputs
-  ); /* Подскажите как вывести в консоль обьект инпутов при сабмите не вынося  let savedInputs глобально из функции function onFormInput(e)*/
 }
 
 function onFormInput(e) {
-  // e.preventDefault();
-  // formData[e.target.name] = e.target.value;
-  // localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
-
-  /* Чтобы избавиться от const formData = {};  ИЗ ЗАПИСИ КУРСА JS39*/
-
-  savedInputs = localStorage.getItem(STORAGE_KEY);
+  let savedInputs = localStorage.getItem(STORAGE_KEY);
   savedInputs = savedInputs ? JSON.parse(savedInputs) : {};
   savedInputs[e.target.name] = e.target.value;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(savedInputs));
@@ -39,8 +34,7 @@ function getStorageInputs() {
 
   if (savedData) {
     savedData = JSON.parse(savedData);
-    Object.entries(savedData).forEach(([name, value]) => {
-      // formData[name] = value;
+    Object.entries(savedData).forEach(([name, value]) => {     
       form.elements[name].value = value;
     });
   }
