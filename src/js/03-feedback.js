@@ -17,8 +17,12 @@ function onFormSubmit(e) {
   const userData = {};
   formData.forEach((value, name) => userData[name] = value);
   console.log(userData);
-
-  e.currentTarget.reset();
+  /*Проверка на заполнение всех полей */
+  const { email, message } = e.target.elements;
+  if (email.value === "" || message.value === "") {
+   return
+  }
+   e.currentTarget.reset();
   localStorage.removeItem(STORAGE_KEY);
 }
 
